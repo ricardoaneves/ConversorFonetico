@@ -20,7 +20,7 @@ ipa_vowels = {'open a' : 'a',
               'closed o' : 'o',
               'nasal o' : 'õ',
               'u' : 'u',
-              'nasal u' : 'u'}
+              'nasal u' : 'ũ'}
 
 def get_syllables(word):
 
@@ -44,88 +44,55 @@ def get_syllables(word):
                 (array[i] == 'ã' and array[i+1] == 'o'):
 
                 res.append(array[i])
-                res.append(array[i+1])
-                res.append('.')
-                i += 1
                 flag = 1
 
             # Sequências que formam ditongos decrescentes
-            if  (array[i] == 'e' and array[i+1] == 'i') or \
-                (array[i] == 'e' and array[i+1] == 'u') or \
-                (array[i] == 'é' and array[i+1] == 'i') or \
-                (array[i] == 'é' and array[i+1] == 'u') or \
-                (array[i] == 'ê' and array[i+1] == 'i'):
+            elif  (array[i] == 'e' and array[i+1] == 'i') or \
+                  (array[i] == 'e' and array[i+1] == 'u') or \
+                  (array[i] == 'é' and array[i+1] == 'i') or \
+                  (array[i] == 'é' and array[i+1] == 'u') or \
+                  (array[i] == 'ê' and array[i+1] == 'i'):
 
                 res.append(array[i])
-                res.append(array[i+1])
-                res.append('.')
-                i += 1
                 flag = 1
 
             # Sequências que formam ditongos decrescentes
-            if array[i] == 'i' and array[i+1] == 'u':
+            elif array[i] == 'i' and array[i+1] == 'u':
 
                 res.append(array[i])
-                res.append(array[i+1])
-                res.append('.')
                 i += 1
                 flag = 1
 
             # Sequências que formam ditongos decrescentes
-            if  (array[i] == 'o' and array[i+1] == 'i') or \
+            elif  (array[i] == 'o' and array[i+1] == 'i') or \
                 (array[i] == 'o' and array[i+1] == 'u') or \
                 (array[i] == 'ó' and array[i+1] == 'i'):
 
                 res.append(array[i])
-                res.append(array[i+1])
-                res.append('.')
-                i += 1
                 flag = 1
 
             # Sequências que formam ditongos decrescentes
-            if array[i] == 'u' and array[i+1] == 'i':
+            elif array[i] == 'u' and array[i+1] == 'i':
 
                 res.append(array[i])
-                res.append(array[i+1])
-                res.append('.')
-                i += 1
-                flag = 1
-
-            # As combinações 'qu' e 'gu' não são separáveis da vogal ou ditongo que lhes sucede
-            if  (array[i] == 'q' and array[i+1] == 'u') or \
-                (array[i] == 'g' and array[i+1] == 'u'):
-
-                res.append(array[i])
-                res.append(array[i+1])
-                res.append(array[i+2])
-                res.append('.')
-                i += 2
                 flag = 1
 
             # Hiatos são indivisíveis quando ocorrem em silaba átona final
-            if  (array[i] == 'e' and array[i+1] == 'a') or \
-                (array[i] == 'e' and array[i+1] == 'o') or \
-                (array[i] == 'i' and array[i+1] == 'a') or \
-                (array[i] == 'i' and array[i+1] == 'e') or \
-                (array[i] == 'i' and array[i+1] == 'o') or \
-                (array[i] == 'o' and array[i+1] == 'a') or \
-                (array[i] == 'o' and array[i+1] == 'e') or \
-                (array[i] == 'u' and array[i+1] == 'a') or \
-                (array[i] == 'u' and array[i+1] == 'e') or \
-                (array[i] == 'u' and array[i+1] == 'i') or \
-                (array[i] == 'u' and array[i+1] == 'o'):
-
-
-                if i == len(array)-2:
+            elif  ((array[i] == 'e' and array[i+1] == 'a') or \
+                  (array[i] == 'e' and array[i+1] == 'o') or \
+                  (array[i] == 'i' and array[i+1] == 'a') or \
+                  (array[i] == 'i' and array[i+1] == 'e') or \
+                  (array[i] == 'i' and array[i+1] == 'o') or \
+                  (array[i] == 'o' and array[i+1] == 'a') or \
+                  (array[i] == 'o' and array[i+1] == 'e') or \
+                  (array[i] == 'u' and array[i+1] == 'a') or \
+                  (array[i] == 'u' and array[i+1] == 'e') or \
+                  (array[i] == 'u' and array[i+1] == 'i') or \
+                  (array[i] == 'u' and array[i+1] == 'o')) and \
+                  i == len(array)-2:
                     
-                    res.append(array[i])
-                    flag = 1
-
-                else:
-
-                    res.append(array[i])
-                    res.append('.')
-                    flag = 1
+                res.append(array[i])
+                flag = 1
 
             else:
 
@@ -145,6 +112,17 @@ def get_syllables(word):
              (array[i] == 'a' and array[i+1] == 'd'):
 
             res.append(array[i])
+            flag = 1
+
+        # As combinações 'qu' e 'gu' não são separáveis da vogal ou ditongo que lhes sucede
+        elif  (array[i] == 'q' and array[i+1] == 'u') or \
+              (array[i] == 'g' and array[i+1] == 'u'):
+
+            res.append(array[i])
+            res.append(array[i+1])
+            res.append(array[i+2])
+            res.append('.')
+            i += 2
             flag = 1
 
         # Consoantes seguidas de vogais permanecem em inicio da silaba (ataque)
@@ -175,20 +153,24 @@ def get_syllables(word):
                 (array[i] == 'v' and array[i+1] == 'l') or \
                 (array[i] == 'v' and array[i+1] == 'r'):
 
-               res.append(array[i])
-               res.append(array[i+1])
-               i += 1
-               flag = 1
+                res.append('.')
+                res.append(array[i])
+                res.append(array[i+1])
+                i += 1
+                flag = 1
             
             # Digrafos - sequencias de consoantes que representam um só som não se separam
-            if  (array[i] == 'c' and array[i+1] == 'h') or \
-                (array[i] == 'l' and array[i+1] == 'h') or \
-                (array[i] == 'n' and array[i+1] == 'h'):
+            if  ((array[i] == 'c' and array[i+1] == 'h') or \
+                 (array[i] == 'l' and array[i+1] == 'h') or \
+                 (array[i] == 'n' and array[i+1] == 'h') or \
+                 (array[i] == 'r' and array[i+1] == 'r')) and \
+                 res[-1] != '.':
 
-               res.append(array[i])
-               res.append(array[i+1])
-               i += 1
-               flag = 1
+                res.append('.')
+                res.append(array[i])
+                res.append(array[i+1])
+                i += 1
+                flag = 1
 
             # Sao indivisiveis os grupos consonanticos cz e ps em inicio de palavra
             if i == 0:
@@ -196,10 +178,10 @@ def get_syllables(word):
                 if  (array[i] == 'c' and array[i+1] == 'z') or \
                     (array[i] == 'p' and array[i+1] == 's'):
 
-                   res.append(array[i])
-                   res.append(array[i+1])
-                   i += 1
-                   flag = 1
+                    res.append(array[i])
+                    res.append(array[i+1])
+                    i += 1
+                    flag = 1
 
             if flag == 0:
 
