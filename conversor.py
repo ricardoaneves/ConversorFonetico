@@ -1,30 +1,14 @@
 #!/usr/bin/python3
 
-import time
+import sys
 
 # Vowels and consonants in the alphabet
-vowels = ['a', 'e', 'i', 'o', 'u', 'á', 'à', 'ã', 'â', 'é', 'ẽ', 'ê', 'í', 'ó', 'õ', 'ú', 'A', 'E', 'I', 'O', 'U']
-consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', 'ç']
+vowels = ['a', 'e', 'i', 'o', 'u', 'á', 'à', 'ã', 'â', 'é', 'ẽ', 'ê', 'í', 'ó', 'õ', 'ú', 'A', 'E', 'I', 'O', 'U', 'Á', 'À', 'Ã', 'Â', 'É', 'Ẽ', 'Ê', 'Í', 'Ó', 'Õ', 'Ú']
+consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', 'ç', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z', 'Ç']
 
-# IPA vowels
-ipa_vowels = {'open a' : 'a',
-              'closed a' : 'ɐ',
-              'nasal a' : 'ɐ̃',
-              'open e' : 'ɛ',
-              'closed e' : 'ɛ',
-              'mute e' : 'ɨ',
-              'nasal e' : 'ẽ',
-              'i' : 'i',
-              'nasal i' : 'ĩ',
-              'open o' : 'ɔ',
-              'closed o' : 'o',
-              'nasal o' : 'õ',
-              'u' : 'u',
-              'nasal u' : 'ũ'}
+def get_syllables(text):
 
-def get_syllables(word):
-
-    array = list(word)
+    array = list(text)
     res = []
     i = 0
 
@@ -209,17 +193,103 @@ def get_syllables(word):
 
     return syllables
 
+def ipa(text):
+
+    array = list(text)
+    res = []
+    i = 0
+
+    for i in range(len(array)):
+
+        # Caracter especial
+        if array[i] not in vowels and array[i] not in consonants:
+            res.append(array[i])
+
+        # Letra A
+        if array[i] == 'a' or array[i] == 'á' or array[i] == 'à' or array[i] == 'â' or array[i] == 'ã' or \
+           array[i] == 'A' or array[i] == 'Á' or array[i] == 'À' or array[i] == 'Â' or array[i] == 'Ã':
+
+            if array[i] == 'á' or array[i] == 'à' or \
+               array[i] == 'Á' or array[i] == 'À':
+               
+               res.append('a')
+            
+            elif array[i] == 'â' or array[i] == 'Â':
+                res.append('ɐ')
+
+            elif i < len(array)-1 and (array[i+1] == 'm' or array[i+1] == 'n' or \
+                                       array[i+1] == 'M' or array[i+1] == 'N') :
+
+                res.append('ɐ̃')
+
+            elif array[i] == 'l' or array[i] == 'L':
+                res.append('a')
+
+            elif i < len(array)-1 and (array[i+1] == 'r' and array[i+2] == ' '):
+                 res.append('a')
+
+            else:
+                res.append('ɐ')
+
+        # Letra B
+        if array[i] == 'b' or array[i] == 'B':
+            res.append('b')
+
+        # Letra C
+        if array[i] == 'c' or array[i] == 'C':
+
+            if i < len(array)-1 and (array[i+1] == 'a' or array[i+1] == 'A' or \
+                                     array[i+1] == 'o' or array[i+1] == 'O' or \
+                                     array[i+1] == 'u' or array[i+1] == 'U'):
+
+               res.append('k')
+
+            elif i < len(array)-1 and (array[i+1] == 'e' or array[i+1] == 'E' or \
+                                       array[i+1] == 'i' or array[i+1] == 'I'):
+
+                 res.append('s')
+
+            elif i < len(array)-1 and (array[i+1] == 'h' or array[i+1] == 'H'):
+                res.append('ʃ')
+
+            else:
+                res.append('k')
+
+        # Letra Ç
+        if array[i] == 'ç' or array[i] == 'Ç':
+            res.append('s')
+
+        # Letra D
+        if array[i] == 'd' or array[i] == 'D':
+            res.append('d')
+
+        # Letra E
+
+    ipa = ''.join(res)
+
+    return ipa
+
 if __name__ == '__main__':
 
-    # Get word from standard input
-    print('\n' + 'Insert word:')
-    word = input()
+    if len(sys.argv) > 2:
+        print('\n' + 'Wrong input format, please try again:')
+        print('python3 conversor.py \'<TEXT>\'' + '\n')
+        sys.exit()
 
-    print('\n' + 'Processing word...')
-    syllables = get_syllables(word)
+    # Get words from standard input
+    words = sys.argv
+
+    words.pop(0)
+    text = ' '.join(words)
+
+    print('\n' + 'Processing text...')
+    syllables = get_syllables(text)
+    ipa = ipa(syllables)
     print()
 
     # Print results
-    print('Plain word: ' + word)
+    print('Number of words: ' + str(len(text.split(' '))))
+    print('Plain text: ' + text)
     print('Stressed syllables: ' + syllables)
-    print('IPA: ' + 'undefined' + '\n')
+    print('IPA: ' + ipa)
+    print('X-SAMPA: ' + 'undefined' + '\n')
