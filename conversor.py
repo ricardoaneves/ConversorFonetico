@@ -3,7 +3,7 @@
 import sys
 
 # Vowels and consonants in the alphabet
-vowels = ['a', 'e', 'i', 'o', 'u', 'á', 'à', 'ã', 'â', 'é', 'ẽ', 'ê', 'í', 'ó', 'õ', 'ú', 'A', 'E', 'I', 'O', 'U', 'Á', 'À', 'Ã', 'Â', 'É', 'Ẽ', 'Ê', 'Í', 'Ó', 'Õ', 'Ú']
+vowels = ['a', 'e', 'i', 'o', 'u', 'á', 'à', 'ã', 'â', 'é', 'ê', 'í', 'ó', 'õ', 'ú', 'A', 'E', 'I', 'O', 'U', 'Á', 'À', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Õ', 'Ú']
 consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', 'ç', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z', 'Ç']
 
 def get_syllables(text):
@@ -264,6 +264,95 @@ def ipa(text):
             res.append('d')
 
         # Letra E
+        if array[i] == 'e' or array[i] == 'é' or array[i] == 'ê' or \
+           array[i] == 'E' or array[i] == 'É' or array[i] == 'Ê':
+
+            if array[i] == 'é' or array[i] == 'É':
+                res.append('ɛ')
+
+            elif array[i] == 'ê' or array[i] == 'Ê':
+                res.append('e')
+
+            elif i < len(array)-1 and (array[i+1] == 'm' or array[i+1] == 'M' or \
+                                       array[i+1] == 'n' or array[i+1] == 'n'):
+
+                res.append('ẽ')
+
+            elif i == 0:
+                res.append('i')
+
+            elif i == 1 and (array[i-1] == 'h' or array[i-1] == 'H'):
+                res.append('i')
+
+            elif (i > 0 or i < len(array)-1) and (array[i-1] in vowels or array[i+1] in vowels):
+                res.append('i')
+
+            else:
+                res.append('ɨ')
+
+        # Letra F
+        if array[i] == 'f' or array[i] == 'F':
+            res.append('f')
+
+        # Letra G
+        if array[i] == 'g' or array[i] == 'G':
+
+            if i < len(array)-1 and (array[i+1] == 'e' or array[i+1] == 'E' or \
+                                     array[i+1] == 'i' or array[i+1] == 'I'):
+
+                res.append('ʒ')
+            
+            else:
+                res.append('g')
+
+        # Letra H
+        if array[i] == 'h' or array[i] == 'H':
+            continue
+
+        # Letra I
+        if array[i] == 'i' or array[i] == 'I':
+
+            if i < len(array)-1 or (array[i+1] == 'm' or array[i+1] == 'M' or\
+                                    array[i+1] == 'n' or array[i+1] == 'N'):
+                res.append('ĩ')
+            
+            else:
+                res.append('i')
+            
+        # Letra J
+        if array[i] == 'j' or array[i] == 'J':
+            res.append('ʒ')
+
+        # Letra K
+        if array[i] == 'k' or array[i] == 'K':
+            res.append('k')
+
+        # Letra L
+        if array[i] == 'l' or array[i] == 'L':
+
+            if i < len(array)-1 or (array[i+1] == 'h' or array[i+1] == 'H'):
+                res.append('ʎ')
+            
+            else:
+                res.append('l')
+
+        # Letra M
+        if array[i] == 'm' or array[i] == 'M':
+
+            if i > 0 and array[i-1] == 'i':
+                continue
+            
+            else:
+                res.append('m')
+
+        # Letra N
+        if array[i] == 'n' or array[i] == 'N':
+
+            if i < len(array)-1 and (array[i+1] == 'h' or array[i+1] == 'H'):
+                res.append('ɲ')
+
+            else:
+                res.append('n')
 
     ipa = ''.join(res)
 
