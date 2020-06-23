@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 
 import sys
+import json
 
 # Vowels and consonants in the alphabet
-vowels = ['a', 'e', 'i', 'o', 'u', 'á', 'à', 'ã', 'â', 'é', 'ê', 'í', 'ó', 'õ', 'ú', 'A', 'E', 'I', 'O', 'U', 'Á', 'À', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Õ', 'Ú']
+vowels = ['a', 'e', 'i', 'o', 'u', 'á', 'à', 'ã', 'â', 'é', 'ê', 'í', 'ó', 'õ', 'ô', 'ú', 'A', 'E', 'I', 'O', 'U', 'Á', 'À', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Õ', 'Ô', 'Ú']
 consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', 'ç', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z', 'Ç']
 
 def get_syllables(text):
@@ -98,7 +99,7 @@ def get_syllables(text):
             else:
 
                 res.append(array[i])
-                res.append('.')
+                res.append('·')
                 flag = 1
 
         # As combinações 'qu' e 'gu' não são separáveis da vogal ou ditongo que lhes sucede
@@ -106,7 +107,7 @@ def get_syllables(text):
            (array[i] == 'g' and array[i+1] == 'u'):
 
             if i != 0:
-                res.append('.')
+                res.append('·')
 
             res.append(array[i])
             res.append(array[i+1])
@@ -117,7 +118,7 @@ def get_syllables(text):
         elif array[i] in consonants and array[i+1] in vowels:
 
             if i != 0:
-                res.append('.')
+                res.append('·')
 
             res.append(array[i])
             flag = 1
@@ -144,7 +145,7 @@ def get_syllables(text):
                (array[i] == 'v' and array[i+1] == 'r'):
 
                 if i != 0:
-                    res.append('.')
+                    res.append('·')
                     
                 res.append(array[i])
                 res.append(array[i+1])
@@ -157,7 +158,7 @@ def get_syllables(text):
                 (array[i] == 'n' and array[i+1] == 'h'):
 
                 if i != 0:
-                    res.append('.')
+                    res.append('·')
 
                 res.append(array[i])
                 res.append(array[i+1])
@@ -186,14 +187,22 @@ def get_syllables(text):
     for i in range(len(res)):
     
         if res[i] == ' ':
-            if res[i+1] == '.':
+            if res[i+1] == '·':
                 res[i+1] = ''
 
     syllables = ''.join(res)
 
     return syllables
 
-def ipa(text):
+def get_stressed(text):
+
+    stressed = ''
+
+    
+
+    return stressed
+
+def get_ipa(text):
 
     array = list(text)
     res = []
@@ -203,7 +212,12 @@ def ipa(text):
 
         # Caracter especial
         if array[i] not in vowels and array[i] not in consonants:
-            res.append(array[i])
+
+            if array[i] == '·':
+                res.append('.')
+
+            else:
+                res.append(array[i])
 
         # Letra A
         if array[i] == 'a' or array[i] == 'á' or array[i] == 'à' or array[i] == 'â' or array[i] == 'ã' or \
@@ -284,7 +298,7 @@ def ipa(text):
             elif i == 1 and (array[i-1] == 'h' or array[i-1] == 'H'):
                 res.append('i')
 
-            elif (i > 0 or i < len(array)-1) and (array[i-1] in vowels or array[i+1] in vowels):
+            elif (i > 0 and array[i-1] in vowels) or (i < len(array)-1 and array[i+1] in vowels):
                 res.append('i')
 
             else:
@@ -310,9 +324,10 @@ def ipa(text):
             continue
 
         # Letra I
-        if array[i] == 'i' or array[i] == 'I':
+        if array[i] == 'i' or array[i] == 'í' or \
+           array[i] == 'I' or array[i] == 'Í':
 
-            if i < len(array)-1 or (array[i+1] == 'm' or array[i+1] == 'M' or\
+            if i < len(array)-1 and (array[i+1] == 'm' or array[i+1] == 'M' or\
                                     array[i+1] == 'n' or array[i+1] == 'N'):
                 res.append('ĩ')
             
@@ -330,7 +345,7 @@ def ipa(text):
         # Letra L
         if array[i] == 'l' or array[i] == 'L':
 
-            if i < len(array)-1 or (array[i+1] == 'h' or array[i+1] == 'H'):
+            if i < len(array)-1 and (array[i+1] == 'h' or array[i+1] == 'H'):
                 res.append('ʎ')
             
             else:
@@ -339,8 +354,11 @@ def ipa(text):
         # Letra M
         if array[i] == 'm' or array[i] == 'M':
 
-            if i > 0 and array[i-1] == 'i':
-                continue
+            if (i == len(array)-1 or array[i+1] == ' ') and (array[i-1] == 'a' or array[i-1] == 'A'):
+                res.append('w')
+
+            elif (i == len(array)-1 or array[i+1] == ' ') and (array[i-1] == 'e' or array[i-1] == 'E'):
+                res.append('j')
             
             else:
                 res.append('m')
@@ -348,15 +366,226 @@ def ipa(text):
         # Letra N
         if array[i] == 'n' or array[i] == 'N':
 
-            if i < len(array)-1 and (array[i+1] == 'h' or array[i+1] == 'H'):
+            if i > 0 and array[i-1] in vowels:
+                continue
+
+            elif i < len(array)-1 and (array[i+1] == 'h' or array[i+1] == 'H'):
                 res.append('ɲ')
 
             else:
                 res.append('n')
 
+        # Letra O
+        if array[i] == 'o' or array[i] == 'ó' or array[i] == 'ô' or array[i] == 'õ' or \
+           array[i] == 'O' or array[i] == 'Ó' or array[i] == 'Ô' or array[i] == 'Õ':
+
+            if array[i] == 'ó' or array[i] == 'Ó':
+                res.append('ɔ')
+
+            elif array[i] == 'ô' or array[i] == 'Ô':
+                res.append('o')
+
+            elif array[i] == 'õ' or array[i] == 'Õ':
+                res.append('õ')
+
+            elif i == 0:
+                res.append('ɔ')
+
+            elif i == 1 and (array[i-1] == 'h' or array[i-1] == 'H'):
+                res.append('ɔ')
+
+            elif i < len(array)-1 and (array[i+1] == 'm' or array[i+1] == 'n' or \
+                                       array[i+1] == 'M' or array[i+1] == 'N') :
+
+                res.append('õ')
+
+            else:
+                res.append('u')
+
+        # Letra P
+        if array[i] == 'p' or array[i] == 'P':
+            res.append('p')
+
+        # Letra Q
+        if array[i] == 'q' or array[i] == 'Q':
+            res.append('k')
+
+        # Letra R
+        if array[i] == 'r' or array[i] == 'R':
+
+            if i < len(array)-1 and (array[i+1] == 'r' or array[i+1] == 'R'):
+                res.append('ʁ')
+
+            elif i > 0 and (array[i-1] == 'r' or array[i-1] == 'R'):
+                continue
+
+            elif i == 0:
+                res.append('ʁ')
+
+            else:
+                res.append('ɾ')
+
+        # Letra S
+        if array[i] == 's' or array[i] == 'S':
+
+            if i == 0:
+                res.append('s')
+
+            elif i == len(array)-1:
+                res.append('ʃ')
+
+            elif i < len(array)-1 and (array[i+1] == 's' or array[i+1] == 'S'):
+                res.append('s')
+            
+            elif i > 0 and (array[i-1] == 's' or array[i-1] == 'S'):
+                continue
+
+            elif i < len(array)-1 and (array[i+1] == 'c' or array[i+1] == 'ç' or array[i+1] == 'f' or array[i+1] == 'p' or array[i+1] == 'q' or array[i+1] == 's' or array[i+1] == 't' or array[i+1] == ' ' or \
+                                       array[i+1] == 'C' or array[i+1] == 'Ç' or array[i+1] == 'F' or array[i+1] == 'P' or array[i+1] == 'Q' or array[i+1] == 'S' or array[i+1] == 'T'):
+                res.append('ʃ')
+
+            elif i < len(array)-1 and (array[i+1] == 'b' or array[i+1] == 'd' or array[i+1] == 'g' or array[i+1] == 'j' or array[i+1] == 'l' or array[i+1] == 'm' or array[i+1] == 'n' or array[i+1] == 'r' or array[i+1] == 'v' or array[i+1] == 'z' or array[i+1] == ' ' or \
+                                       array[i+1] == 'B' or array[i+1] == 'D' or array[i+1] == 'G' or array[i+1] == 'J' or array[i+1] == 'L' or array[i+1] == 'M' or array[i+1] == 'N' or array[i+1] == 'R' or array[i+1] == 'V' or array[i+1] == 'Z'):
+                res.append('ʒ')
+
+            elif (i > 0 or i < len(array)-1) and (array[i-1] in vowels or array[i+1] in vowels):
+                res.append('z')
+
+            else:
+                res.append('s')
+            
+        # Letra T
+        if array[i] == 't' or array[i] == 'T':
+            res.append('t')
+
+        # Letra U
+        if array[i] == 'u' or array[i] == 'ú' or \
+           array[i] == 'U' or array[i] == 'Ú':
+
+            if i < len(array)-1 and (array[i+1] == 'm' or array[i+1] == 'M' or \
+                                     array[i+1] == 'n' or array[i+1] == 'n'):
+
+                res.append('ũ')
+            
+            else:
+                res.append('u')
+
+        # Letra V
+        if array[i] == 'v' or array[i] == 'V':
+            res.append('v')
+
+        # Letra W
+        if array[i] == 'w' or array[i] == 'W':
+            res.append('u')
+
+        # Letra X
+        if array[i] == 'x' or array[i] == 'X':
+
+            if i == 0:
+                res.append('ʃ')
+
+            elif i > 1 and ((array[i-2] == 'm' or array[i-2] == 'M') and (array[i-1] == 'e' or array[i-1] == 'E')):
+                res.append('ʃ')
+
+            elif i > 1 and ((array[i-2] == 'e' or array[i-2] == 'E') and (array[i-1] == 'n' or array[i-1] == 'N')):
+                res.append('ʃ')
+
+            elif i > 1 and array[i-2] in vowels and array[i-1] in vowels:
+                res.append('ʃ')
+
+            else:
+                res.append('z')
+
+        # Letra Y
+        if array[i] == 'y' or array[i] == 'Y':
+            res.append('i')
+
+        # Letra Z
+        if array[i] == 'z' or array[i] == 'Z':
+
+            if i == 0:
+                res.append('z')
+
+            elif i == len(array)-1:
+                res.append('ʃ')
+
+            elif i < len(array)-1 and (array[i+1] == 'c' or array[i+1] == 'ç' or array[i+1] == 'f' or array[i+1] == 'p' or array[i+1] == 'q' or array[i+1] == 's' or array[i+1] == 't' or array[i+1] == ' ' or \
+                                       array[i+1] == 'C' or array[i+1] == 'Ç' or array[i+1] == 'F' or array[i+1] == 'P' or array[i+1] == 'Q' or array[i+1] == 'S' or array[i+1] == 'T'):
+                res.append('ʃ')
+
+            elif i < len(array)-1 and (array[i+1] == 'b' or array[i+1] == 'd' or array[i+1] == 'g' or array[i+1] == 'j' or array[i+1] == 'l' or array[i+1] == 'm' or array[i+1] == 'n' or array[i+1] == 'r' or array[i+1] == 'v' or array[i+1] == 'z' or array[i+1] == ' ' or \
+                                       array[i+1] == 'B' or array[i+1] == 'D' or array[i+1] == 'G' or array[i+1] == 'J' or array[i+1] == 'L' or array[i+1] == 'M' or array[i+1] == 'N' or array[i+1] == 'R' or array[i+1] == 'V' or array[i+1] == 'Z'):
+                res.append('ʒ')
+
+            elif (i > 0 or i < len(array)-1) and (array[i-1] in vowels or array[i+1] in vowels):
+                res.append('z')
+
+            else:
+                res.append('z')
+
     ipa = ''.join(res)
 
     return ipa
+
+def get_solution(text):
+
+    res = []
+
+    with open('ipa.json') as ipa:
+        data = json.load(ipa)
+
+    text = text.split(' ')
+    for word in text:
+        for w in data:
+            if word == w[0]:
+                res.append(w[1])
+                res.append(' ')
+
+    ipa.close()
+
+    if len(res) > 0:
+        res.pop()
+
+    solution = ''.join(res)
+
+    return solution
+
+def get_percentage(ipa, solution):
+
+    corrects = 0
+    chars = 0
+    i = 0
+
+    ipa = list(ipa)
+    solution = list(solution)
+
+    solution = [j for j in solution if j != 'ˈ']
+
+    if len(ipa) > len(solution):
+        length = len(solution)
+    else:
+        length = len(ipa)
+
+    print(ipa)
+    print(solution)
+
+    while i < length:
+
+        chars += 1
+        if ipa[i] == solution[i]:
+            print(ipa[i])
+            print(solution[i])
+            print()
+            corrects += 1
+
+        i += 1 
+
+    if chars == 0:
+        chars = 1
+
+    percentage = corrects / chars * 100
+
+    return [percentage, corrects, chars]
 
 if __name__ == '__main__':
 
@@ -373,7 +602,10 @@ if __name__ == '__main__':
 
     print('\n' + 'Processing text...')
     syllables = get_syllables(text)
-    ipa = ipa(syllables)
+    stressed = get_stressed(syllables)
+    ipa = get_ipa(syllables)
+    solution = get_solution(syllables)
+    triple = get_percentage(ipa, solution)
     print()
 
     # Print results
@@ -381,4 +613,5 @@ if __name__ == '__main__':
     print('Plain text: ' + text)
     print('Stressed syllables: ' + syllables)
     print('IPA: ' + ipa)
-    print('X-SAMPA: ' + 'undefined' + '\n')
+    print('Solution: ' + solution)
+    print('Correct chars: ' + str(triple[1]) + '/' + str(triple[2]) + ', ' + ('%.2f' % triple[0]) + '%' + '\n')
