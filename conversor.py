@@ -29,8 +29,8 @@ def get_syllables(text):
                 i += 2
                 flag = 1
 
-            elif (array[i] == 'a' and array[i+1] == 'b') or \
-                (array[i] == 'a' and array[i+1] == 'd'):
+            elif (array[i] == 'a' and array[i+1] == 'b' and array[i+2] in consonants) or \
+                 (array[i] == 'a' and array[i+1] == 'd' and array[i+2] in consonants):
 
                 res.append(array[i])
                 res.append(array[i+1])
@@ -218,6 +218,13 @@ def get_stressed(text):
             syllable = res[w][-1]
             ending = syllable[-1]
 
+            t = 0
+
+            while ending == 'm' or ending == 'M' or ending == 's' or ending == 'S':
+
+                t -= 1
+                ending = syllable[t-1]
+
             if ending == 'a' or ending == 'e' or ending == 'o' or \
                ending == 'A' or ending == 'E' or ending == 'O':
 
@@ -282,15 +289,15 @@ def get_ipa(text):
                 res.append('ɐ̃')
 
             elif stressed == True:
-
                 res.append('a')
-                stressed = False
 
             elif (i == len(array)-2 and (array[i+1] == 'r')) or (i < len(array)-2 and (array[i+1] == 'r' and array[i+2] == ' ')):
-                 res.append('a')
+                res.append('a')
 
             else:
                 res.append('ɐ')
+
+            stressed = False
 
         # Letra B
         if array[i] == 'b' or array[i] == 'B':
@@ -339,18 +346,19 @@ def get_ipa(text):
 
                 res.append('ẽ')
 
+            elif i < len(array)-1 and (array[i+1] == 'i' or array[i+1] == 'I'):
+                res.append('ɐ')
+
             elif stressed == True:
 
-                if i < len(array)-2 and (array[i+1] == 'c' or array[i+1] == 'C' or array[i+1] == 'l' or array[i+1] == 'L' or array[i+1] == 'n' or array[i+1] == 'N') and (array[i+2] == 'h' or array[i+2] == 'H'):
+                if i < len(array)-2 and (array[i+2] == 'c' or array[i+2] == 'C' or array[i+2] == 'l' or array[i+2] == 'L' or array[i+2] == 'n' or array[i+2] == 'N') and (array[i+3] == 'h' or array[i+3] == 'H'):
                     res.append('ɐ')
 
-                elif i < len(array)-1 and (array[i+1] == 'j' or array[i+1] == 'J'):
+                elif i < len(array)-2 and (array[i+2] == 'j' or array[i+2] == 'J'):
                     res.append('ɐ')
 
                 else:
                     res.append('ɛ')
-
-                stressed = False
 
             elif i > 0 and (array[i-1] == 'ã' or array[i-1] == 'Ã'):
                 res.append('j')
@@ -358,14 +366,22 @@ def get_ipa(text):
             elif i == 0:
                 res.append('i')
 
+            elif i > 1 and (array[i-1] == ' ' or (array[i-1] == '\'' and array[i-2] == ' ')):
+                res.append('i')
+
             elif i == 1 and (array[i-1] == 'h' or array[i-1] == 'H'):
                 res.append('i')
+
+            elif i > 0 and (array[i-1] == 'u' or array[i-1] == 'U'):
+                res.append('ɨ')
 
             elif (i > 0 and array[i-1] in vowels) or (i < len(array)-1 and array[i+1] in vowels):
                 res.append('i')
 
             else:
                 res.append('ɨ')
+
+            stressed = False
 
         # Letra F
         if array[i] == 'f' or array[i] == 'F':
@@ -390,7 +406,10 @@ def get_ipa(text):
         if array[i] == 'i' or array[i] == 'í' or \
            array[i] == 'I' or array[i] == 'Í':
 
-            if i < len(array)-1 and (array[i+1] == 'm' or array[i+1] == 'M' or\
+            if i > 0 and (array[i-1] == 'e' or array[i-1] == 'E'):
+                res.append('j')
+
+            elif i < len(array)-1 and (array[i+1] == 'm' or array[i+1] == 'M' or\
                                      array[i+1] == 'n' or array[i+1] == 'N'):
                 res.append('ĩ')
             
@@ -413,7 +432,7 @@ def get_ipa(text):
             if i < len(array)-1 and (array[i+1] == 'h' or array[i+1] == 'H'):
                 res.append('ʎ')
 
-            elif i < len(array)-1 and (array[i+2] == 'c' or array[i+2] == 'ç' or array[i+2] == 'f' or array[i+2] == 'p' or array[i+2] == 'q' or array[i+2] == 's' or array[i+2] == 't' or array[i+1] == ' ' or \
+            elif i < len(array)-2 and (array[i+2] == 'c' or array[i+2] == 'ç' or array[i+2] == 'f' or array[i+2] == 'p' or array[i+2] == 'q' or array[i+2] == 's' or array[i+2] == 't' or array[i+1] == ' ' or \
                                        array[i+2] == 'C' or array[i+2] == 'Ç' or array[i+2] == 'F' or array[i+2] == 'P' or array[i+2] == 'Q' or array[i+2] == 'S' or array[i+2] == 'T'):
                 res.append('ɫ')
 
@@ -426,7 +445,10 @@ def get_ipa(text):
         # Letra M
         if array[i] == 'm' or array[i] == 'M':
 
-            if (i == len(array)-1 or array[i+1] == ' ') and (array[i-1] == 'a' or array[i-1] == 'A'):
+            if i > 0 and array[i-1] in vowels:
+                continue
+
+            elif (i == len(array)-1 or array[i+1] == ' ') and (array[i-1] == 'a' or array[i-1] == 'A'):
                 res.append('w')
 
             elif (i == len(array)-1 or array[i+1] == ' ') and (array[i-1] == 'e' or array[i-1] == 'E'):
@@ -460,6 +482,9 @@ def get_ipa(text):
             elif array[i] == 'õ' or array[i] == 'Õ':
                 res.append('õ')
 
+            elif i < len(array)-1 and (array[i+1] == 'u' or array[i+1] == 'U') :
+                res.append('o')
+
             elif i > 0 and (array[i-1] == 'ã' or array[i-1] == 'Ã'):
                 res.append('w')
 
@@ -474,11 +499,14 @@ def get_ipa(text):
 
                 res.append('õ')
 
+            elif stressed == True:
+                res.append('ɔ')
+
             else:
                 res.append('u')
-            
-            stressed = False
 
+            stressed = False
+        
         # Letra P
         if array[i] == 'p' or array[i] == 'P':
             res.append('p')
@@ -490,13 +518,13 @@ def get_ipa(text):
         # Letra R
         if array[i] == 'r' or array[i] == 'R':
 
-            if i < len(array)-2 and array[i+1] == '·' and (array[i+2] == 'r' or array[i+2] == 'R'):
+            if (i < len(array)-2 and array[i+1] == '·' and (array[i+2] == 'r' or array[i+2] == 'R')) or (i < len(array)-3 and array[i+1] == '·' and array[i+2] == '\'' and (array[i+3] == 'r' or array[i+3] == 'R')):
                 continue
 
-            elif i > 0 and array[i-1] == '·' and (array[i-2] == 'r' or array[i-2] == 'R'):
+            elif (i > 0 and array[i-1] == '·' and (array[i-2] == 'r' or array[i-2] == 'R')) or (i > 0 and array[i-1] == '\'' and array[i-2] == '·' and (array[i-3] == 'r' or array[i-3] == 'R')):
                 res.append('ʀ')
 
-            elif i == 0:
+            elif i == 0 or (i > 0 and array[i-1] == ' ') or (i == 1 and array[i-1] == '\'') or (i > 1 and array[i-1] == '\'' and array[i-2] == ' '):
                 res.append('ʀ')
 
             else:
@@ -505,24 +533,35 @@ def get_ipa(text):
         # Letra S
         if array[i] == 's' or array[i] == 'S':
 
-            if i == 0:
+            if i == 0 or array[i-1] == ' ':
                 res.append('s')
 
             elif i == len(array)-1:
                 res.append('ʃ')
 
-            elif i < len(array)-2 and (array[i+2] == 's' or array[i+2] == 'S'):
+            elif (i < len(array)-2 and array[i+1] == '·' and (array[i+2] == 's' or array[i+2] == 'S')) or (i < len(array)-3 and array[i+1] == '·' and array[i+2] == '\'' and (array[i+3] == 's' or array[i+3] == 'S')):
                 continue
-            
-            elif i > 0 and (array[i-2] == 's' or array[i-2] == 'S'):
+
+            elif (i > 0 and array[i-1] == '·' and (array[i-2] == 's' or array[i-2] == 'S')) or (i > 0 and array[i-1] == '\'' and array[i-2] == '·' and (array[i-3] == 's' or array[i-3] == 'S')):
+                res.append('s')
+
+            elif i == 0 or (i > 0 and array[i-1] == ' ') or (i == 1 and array[i-1] == '\'') or (i > 1 and array[i-1] == '\'' and array[i-2] == ' '):
                 res.append('s')
 
             elif i < len(array)-1 and (array[i+2] == 'c' or array[i+2] == 'ç' or array[i+2] == 'f' or array[i+2] == 'p' or array[i+2] == 'q' or array[i+2] == 's' or array[i+2] == 't' or array[i+1] == ' ' or \
                                        array[i+2] == 'C' or array[i+2] == 'Ç' or array[i+2] == 'F' or array[i+2] == 'P' or array[i+2] == 'Q' or array[i+2] == 'S' or array[i+2] == 'T'):
                 res.append('ʃ')
 
+            elif i < len(array)-1 and array[i+2] == '\'' and (array[i+3] == 'c' or array[i+3] == 'ç' or array[i+3] == 'f' or array[i+3] == 'p' or array[i+3] == 'q' or array[i+3] == 's' or array[i+3] == 't' or array[i+1] == ' ' or \
+                                                              array[i+3] == 'C' or array[i+3] == 'Ç' or array[i+3] == 'F' or array[i+3] == 'P' or array[i+3] == 'Q' or array[i+3] == 'S' or array[i+3] == 'T'):
+                res.append('ʃ')
+
             elif i < len(array)-1 and (array[i+2] == 'b' or array[i+2] == 'd' or array[i+2] == 'g' or array[i+2] == 'j' or array[i+2] == 'l' or array[i+2] == 'm' or array[i+2] == 'n' or array[i+2] == 'r' or array[i+2] == 'v' or array[i+2] == 'z' or array[i+1] == ' ' or \
                                        array[i+2] == 'B' or array[i+2] == 'D' or array[i+2] == 'G' or array[i+2] == 'J' or array[i+2] == 'L' or array[i+2] == 'M' or array[i+2] == 'N' or array[i+2] == 'R' or array[i+2] == 'V' or array[i+2] == 'Z'):
+                res.append('ʒ')
+
+            elif i < len(array)-1 and array[i+2] == '\'' and (array[i+3] == 'b' or array[i+3] == 'd' or array[i+3] == 'g' or array[i+3] == 'j' or array[i+3] == 'l' or array[i+3] == 'm' or array[i+3] == 'n' or array[i+3] == 'r' or array[i+3] == 'v' or array[i+3] == 'z' or array[i+1] == ' ' or \
+                                                              array[i+3] == 'B' or array[i+3] == 'D' or array[i+3] == 'G' or array[i+3] == 'J' or array[i+3] == 'L' or array[i+3] == 'M' or array[i+3] == 'N' or array[i+3] == 'R' or array[i+3] == 'V' or array[i+3] == 'Z'):
                 res.append('ʒ')
 
             elif (i > 0 or i < len(array)-1) and (array[i-1] in vowels and array[i+1] in vowels):
@@ -539,7 +578,10 @@ def get_ipa(text):
         if array[i] == 'u' or array[i] == 'ú' or \
            array[i] == 'U' or array[i] == 'Ú':
 
-            if i < len(array)-1 and (array[i+1] == 'm' or array[i+1] == 'M' or \
+            if i > 0 and (array[i-1] == 'o' or array[i-1] == 'O'):
+                continue
+
+            elif i < len(array)-1 and (array[i+1] == 'm' or array[i+1] == 'M' or \
                                      array[i+1] == 'n' or array[i+1] == 'n'):
 
                 res.append('ũ')
@@ -555,6 +597,10 @@ def get_ipa(text):
             elif (i > 0 and i < len(array)-1) and array[i-1] == 'g' and (array[i+1] == 'a' or array[i+1] == 'á' or array[i+1] == 'à' or array[i+1] == 'â' or array[i+1] == 'ã' or array[i+1] == 'o' or  array[i+1] == 'ó' or \
                                                                          array[i+1] == 'A' or array[i+1] == 'Á' or array[i+1] == 'À' or array[i+1] == 'Â' or array[i+1] == 'Ã' or array[i+1] == 'O' or  array[i+1] == 'Ó'):
                 res.append('w')
+
+            elif (i > 0 and i < len(array)-1) and array[i-1] == 'g' and (array[i+1] == 'e' or array[i+1] == 'é' or array[i+1] == 'i' or array[i+1] == 'í' or \
+                                                                         array[i+1] == 'E' or array[i+1] == 'É' or array[i+1] == 'I' or array[i+1] == 'I'):
+                continue
 
             elif (i == len(array)-1 or (i < len(array)-1 and array[i+1] == ' ')) and array[i-1] in vowels:
                 res.append('w')
@@ -587,6 +633,12 @@ def get_ipa(text):
             elif i > 1 and array[i-2] in vowels and array[i-1] in vowels:
                 res.append('ʃ')
 
+            elif i > 1 and i < len(array)-1 and array[i-2] in vowels and array[i+1] in vowels:
+                res.append('ʃ')
+
+            elif i > 2 and i < len(array)-1 and array[i-3] in vowels and  array[i-2] == '·' and array[i-1] == '\''  and array[i+1] in vowels:
+                res.append('ʃ')
+
             else:
                 res.append('z')
 
@@ -612,6 +664,12 @@ def get_ipa(text):
                 res.append('ʒ')
 
             elif (i > 0 or i < len(array)-1) and (array[i-1] in vowels and array[i+1] in vowels):
+                res.append('z')
+
+            elif (i > 1 or i < len(array)-1) and (array[i-2] in vowels and array[i-1] == '·' and array[i+1] in vowels):
+                res.append('z')
+
+            elif (i > 2 or i < len(array)-1) and (array[i-3] in vowels and array[i-2] == '·' and array[i-1] == '\'' and array[i+1] in vowels):
                 res.append('z')
 
             else:
@@ -679,7 +737,7 @@ def get_percentage(ipa, solution):
 
     return [percentage, corrects, chars]
 
-if __name__ == '__main__':
+def main():
 
     if len(sys.argv) > 2:
         print('\n' + 'Wrong input format, please try again:')
@@ -707,3 +765,8 @@ if __name__ == '__main__':
     print('IPA: ' + ipa)
     print('Solution: ' + solution)
     print('Comparison: ' + str(triple[1]) + '/' + str(triple[2]) + ', ' + ('%.2f' % triple[0]) + '%' + '\n')
+
+    return ipa
+
+if __name__ == '__main__':
+    main()
