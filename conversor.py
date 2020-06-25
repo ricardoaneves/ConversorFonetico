@@ -719,9 +719,6 @@ def get_percentage(ipa, solution):
     else:
         length = len(ipa)
 
-    print(ipa)
-    print(solution)
-
     while i < length:
 
         chars += 1
